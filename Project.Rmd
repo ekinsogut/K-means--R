@@ -1,0 +1,126 @@
+---
+title: "deneme3"
+output: html_document
+---
+```{r}
+
+df = data.frame(I = 1:6 , x = c(1,1,2,2,3,5), y = c(1.5,4.5,1.5,3.5,2.5,6)) #Create dataframe
+
+head(df)
+
+```
+```{r}
+
+c1 <- c(df[1,2], df[1,3]) #C1 center
+c1
+
+c2 <- c(df[3,2], df[3,3]) #C2 center
+c2
+
+```
+```{r}
+
+kmeansFunc <- function(c1 , c2) { 
+  
+  operations <- 0
+  listC1 <- matrix(nrow = 1 , ncol = 1)
+  listC2 <- matrix(nrow = 1 , ncol = 1)
+  forC1 <- c()
+  forC2 <- c()
+  c1a <- c()
+  c1b <- c()
+  c2a <- c()
+  c2b <- c()
+  req1 <- c1
+  req2 <- c2
+  
+  
+  for (i in 1:6){
+    operations = ((df[i,2]-c1[1])**2) + ((df[i,3]-c1[2])**2) #Calculating the distances of points to each other - square and root - For C1
+    listC1[i] = round(sqrt(operations),digits = 3)
+  }
+  
+  for (i in 1:6){
+    operations = ((df[i,2]-c2[1])**2) + ((df[i,3]-c2[2])**2) #Calculating the distances of points to each other - square and root - For C2
+    listC2[i] = round(sqrt(operations),digits = 3)
+  }
+  
+  for (i in 1:6){ #Comparison of C1 and C2 - grouping points based on whether they are big or small
+    if (listC1[i] < listC2[i]) {
+      forC1 <- append(forC1 , df[i,2])
+      forC1 <- append(forC1 , df[i,3])
+    } else if (listC1[i] > listC2[i]) {
+      forC2 <- append(forC2 , df[i,2])
+      forC2 <- append(forC2 , df[i,3])
+    }
+  }
+  
+  for (i in 1:length(forC1)) { #Since the center points in the array are together and united, a search is made by going through the loop 
+                               #and the points are added to a separate array.
+    if ( i %% 2 == 0) {
+      c1a <- append(c1a , forC1[i])
+    }
+    if ( i %% 2 == 1) {
+      c1b <- append(c1b , forC1[i])
+    }
+  }
+  
+  c1a <- sum(c1a) / length(c1a) #The sum and averages of the values in the series are taken. The result is the new C1 centers.
+  c1b <- sum(c1b) / length(c1b)
+  
+  newC1 <- append(c1b , c1a) #new C1
+  
+  
+  for (i in 1:length(forC2)) { #Since the center points in the array are together and united, a search is made by going through the loop 
+                               #and the points are added to a separate array.
+    if ( i %% 2 == 0) {
+      c2a <- append(c2a , forC2[i])
+    }
+    if ( i %% 2 == 1) {
+      c2b <- append(c2b , forC2[i])
+    }
+  }
+  
+  c2a <- sum(c2a) / length(c2a) #The sum and averages of the values in the series are taken. The result is the new C2 centers.
+  c2b <- sum(c2b) / length(c2b)
+  
+  newC2 <- append(c2b , c2a) #new C2
+  
+  print("-----New Clusters")
+  
+  print(forC1)
+  print(forC2)
+  
+  print("-----New centers")
+
+  print(newC1)
+  print(newC2)
+  
+  
+  if(req1 != newC1 || req2 != newC2){ #If the new centers after iteration are equal to the previous centers, 
+                                      #the function is terminated and the NULL value returns.
+    kmeansFunc(newC1 , newC2)
+  } else {
+    
+    plot(df[c("x","y")], pch=15) #Graphic by recent centers
+    
+  }
+}
+
+```
+
+```{r}
+
+result <- kmeansFunc(c1 , c2) #Run kmeansFunc
+
+result
+
+```
+```{r}
+
+
+
+
+```
+
+
